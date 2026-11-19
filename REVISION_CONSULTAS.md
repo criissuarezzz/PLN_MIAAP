@@ -1,10 +1,49 @@
-# Revisión manual de las consultas de evaluación (Hito 1)
+# Revisión de las consultas del Hito 1
 
-Las consultas se generaron con un LLM a partir de fragmentos elegidos al azar de `data/chunks.jsonl`. La muestra contiene 50 candidatos, se obtuvo con semilla 42 y está en `data/muestra_consultas.jsonl`. En el prompt se pidió expresamente **no copiar las palabras ni las expresiones distintivas del texto** (ver el apartado 4.1 de `hito_1.ipynb`).
+## Comprobación tras limpiar el BOE
 
-Este documento recoge la revisión manual de **las 30 consultas** del conjunto final (`data/queries.jsonl`) y la revisión de **los 20 candidatos de la muestra que no se usaron**.
+La muestra histórica contiene 50 candidatos. Se comprobó que coincide exactamente con
+`random.Random(42).sample(fragmentos_originales, 50)` en el orden del archivo original
+(commit `2c038ee`). Se conservaron los 30 casos y su documento relevante antes de
+evaluar los rankings nuevos. De sus fragmentos, 21 coinciden íntegramente con los de
+la muestra. En los otros nueve se comprobó que el pasaje que da la respuesta sigue
+presente. En q025 cambia `source_chunk` de `c0005` a `c0004`. Se proponen dos ajustes
+de redacción en fragmentos intactos.
 
-## Criterios de revisión
+La tabla recoge las propuestas de Codex pendientes de validación por el equipo.
+En cada fila, el identificador permite localizar el texto completo en `data/chunks.jsonl`.
+La revisión humana histórica se conserva debajo con sus preguntas e IDs originales.
+El notebook contrasta las preguntas evaluadas con ambas tablas.
+
+| Consulta | Fragmento actual | Pregunta evaluada | Evidencia común | Propuesta y motivo |
+|---|---|---|---|---|
+| q005 | BOE-A-2006-20764_dtvigesimatercera_c0001 | Para comprobar la retención de una factura profesional que cobré en agosto de 2012, ¿qué versión de las reglas del IRPF tengo que mirar? | en su redacción vigente a 1 de enero de 2012 | Se mantiene el corte temporal en el texto de la disposición. |
+| q007 | BOE-A-2006-20764_a23_c0008 | Al hacer la renta por un piso que tengo alquilado, ¿en qué documento oficial puedo comprobar si el barrio está declarado zona tensionada? | apruebe el Ministerio de Vivienda y Agenda Urbana | Se conserva la remisión a la resolución. |
+| q009 | BOE-A-2006-20764_a3_c0001 | Vivo en una región que nunca ha aprobado normas propias sobre el impuesto de la renta. Para la parte regional de mi declaración, ¿se aplican entonces las rebajas y desgravaciones fijadas por el Estado? | las deducciones establecidos por el Estado | El apartado 3 sigue describiendo qué se aplica si la comunidad no ejerce sus competencias. |
+| q014 | BOE-A-2003-23514_a134_c0001 | ¿Hay algún documento oficial que fije cómo tienen que ser las señales de tráfico, su tamaño en cada carretera y qué indica cada una? | El Catálogo oficial de señales de la circulación y marcas viales | Se conserva el catálogo y la descripción de su contenido. |
+| q019 | BOE-A-2007-20555_a141_c0001 | Si un aparato defectuoso rompe otros objetos de mi casa, ¿qué cantidad se resta de lo que me tendría que pagar el fabricante por esos desperfectos? | se deducirá una franquicia de 500,00 euros | Se conserva el supuesto de daños materiales causados por un producto defectuoso. |
+| q022 | BOE-A-2008-821_a3_c0001 | Cuando acabe la carrera quiero hacer un máster oficial. ¿Se puede pedir beca del Ministerio para ese tipo de estudios? | Enseñanzas conducentes al título oficial de Máster Universitario | Precisar «máster oficial» porque «posgrado oficial» también puede referirse a un doctorado. |
+| q023 | BOE-A-2007-6820_a46bis_c0001 | Mi empresa me da una tarjeta para pagar el bus y el metro. ¿Hasta qué cantidad al mes y al año puede darme sin que Hacienda lo cuente como salario? | 136,36 euros mensuales por trabajador, con el límite de 1.500 euros anuales | Se conservan los dos límites y el contexto de la tarjeta. |
+| q025 | BOE-A-2007-20555_a19_c0004 | ¿Puede la Administración poner límites a las empresas que se presentan en tu casa a venderte algo sin que las hayas llamado? | visitas no solicitadas efectuadas por el empresario en el domicilio | Se reasigna al fragmento que identifica a la Administración y recoge su potestad de restringir las visitas. |
+| q027 | BOE-A-2008-821_a10_c0003 | Mi hijo necesita apoyo escolar por una discapacidad y somos familia numerosa. Para conseguir ayuda con el autobús y el comedor del colegio, ¿cuentan lo que ganamos o lo que tenemos? | no estará sujeta a límites de renta ni de patrimonio familiar | Se conserva el subsidio para familias numerosas y la ausencia de esos límites. |
+| q028 | BOE-A-2015-11430_a51_c0003 | Van a despedir a un grupo grande de compañeros y en la sede donde trabajo nadie representa legalmente a la plantilla. ¿Cuántos días tenemos para elegir a quienes negociarán en nuestro nombre? | quince días | Precisar que en el centro no hay representación legal de la plantilla. La ausencia de representación sindical es un supuesto distinto. |
+| q029 | BOE-A-2007-20555_a163_c0001 | Compré un paquete de vacaciones a través de una agencia. Si tengo un problema durante el viaje, ¿puedo presentar la queja en esa agencia o tengo que contactar yo con quien organizó el viaje? | directamente al minorista a través del cual fue adquirido | Se mantiene la posibilidad de reclamar en la agencia donde se contrató. |
+
+## Procedencia
+
+La muestra original permanece en `data/muestra_consultas.jsonl`. El equipo declaró que
+pidió a ChatGPT redactar preguntas sin copiar expresiones distintivas. El prompt
+documentado está en el notebook. El identificador del modelo y sus parámetros carecen
+de registro. El archivo `data/respuestas_llm.jsonl` conserva la versión revisada en el
+commit `2c038ee`, anterior a esta corrección. La versión más antigua del archivo está
+en `eabd138`. El historial no acredita que todas sus líneas sean salidas en bruto.
+Queda por confirmar con el profesor si el requisito de pesos abiertos alcanza esta
+generación de consultas. Si se aplica, el conjunto actual solo sirve como evaluación
+provisional y hay que generar y revisar uno con un modelo permitido.
+
+## Revisión humana histórica
+
+### Criterios de revisión
 
 Cada consulta se comparó con el texto completo de su fragmento de origen y con el resto de consultas:
 
