@@ -1,36 +1,16 @@
-# Hito 1 — Guía de supervivencia del veinteañero
+# Hito 1 · Guía de supervivencia del veinteañero
 
-## Colección, fragmentación y baselines
+**Colección.** Reconstruimos 1.395 documentos a partir de 11 copias locales de legislación consolidada del BOE. Cada documento es un precepto, como un artículo o una disposición. Quitamos duplicaciones y notas editoriales, y conservamos las citas y el texto de las tablas. La unidad de indexación es el fragmento. Hay 2.315 fragmentos, con ventanas de hasta 300 palabras y 45 de solapamiento en documentos largos. Cada fragmento guarda sus dos IDs.
 
-La colección contiene **1.409 documentos**, correspondientes a artículos y disposiciones de 11 normas del BOE. Cada artículo o disposición tiene un `doc_id` propio y es la unidad que se considera relevante en la evaluación.
+**Método.** Aplicamos a consultas y fragmentos la misma lematización con spaCy, el mismo filtrado gramatical y de palabras vacías, y un vocabulario obtenido solo de los fragmentos mediante frecuencia documental. Comparamos TF-IDF sublineal con coseno y BM25 Okapi de implementación propia, con IDF positiva de tipo Lucene, `k1=1.5` y `b=0.75`. Cada documento recibe la puntuación de su mejor fragmento. Se eliminan duplicados antes de medir Recall@K. MRR usa el ranking completo de documentos con puntuación positiva.
 
-La **unidad de indexación es el fragmento**. Los documentos de hasta 300 palabras se conservan completos. Los más largos se dividen en ventanas de 300 palabras con un solapamiento de 45 palabras (15 %). El último fragmento puede ser más corto. El resultado son **2.757 fragmentos**, cada uno con su propio `chunk_id` y el `doc_id` del documento de origen.
-
-Comparamos **TF-IDF con similitud coseno** (scikit-learn) y una implementación propia de **Okapi BM25** en Python, con `k1 = 1.5` y `b = 0.75`. Aplicamos el mismo preprocesado a los fragmentos y a las consultas: lematización con spaCy, filtrado por categoría gramatical, eliminación de palabras vacías y filtrado por frecuencia documental. Calculamos el IDF de ambos métodos y la longitud media de BM25 sobre los fragmentos, no sobre los documentos completos.
-
-## Consultas de prueba y evaluación
-
-Seleccionamos al azar **50 fragmentos candidatos** con semilla 42. Pedimos a ChatGPT que redactara preguntas naturales para encontrar la información del fragmento sin copiar sus palabras ni expresiones distintivas. El conjunto final contiene **30 consultas de tipo *known-item***. Revisamos manualmente las 30 para comprobar que eran concretas, que el fragmento permitía responderlas y que no reproducían expresiones distintivas. Reformulamos 11 de ellas. El detalle se recoge en [REVISION_CONSULTAS.md](REVISION_CONSULTAS.md).
-
-Cada línea de [`data/queries.jsonl`](data/queries.jsonl) contiene `qid`, `query`, `relevant_ids` (el documento de origen) y `source_chunk` (el fragmento de origen).
-
-La evaluación principal se realiza **a nivel de documento**. Primero recuperamos fragmentos y los ordenamos por puntuación. Después asignamos a cada documento la puntuación de su mejor fragmento y eliminamos los documentos repetidos **antes de aplicar el corte en K**. Sobre esa lista calculamos Recall@5, Recall@10 y MRR.
-
-## Resultados y análisis de errores
+**Consultas.** Conservamos los 30 casos de una muestra histórica aleatoria de 50 fragmentos (semilla 42). El equipo dejó constancia de haber revisado 30 preguntas. Tras limpiar el corpus se comprobó que nueve fragmentos habían cambiado y conservaban el pasaje de respaldo, con un cambio de ID. Dos ajustes de redacción quedan pendientes de validación por el equipo. El historial y la evidencia están en [REVISION_CONSULTAS.md](REVISION_CONSULTAS.md).
 
 | Método | Recall@5 | Recall@10 | MRR |
 |---|---:|---:|---:|
-| TF-IDF + coseno | 0,4667 | 0,6333 | 0,2919 |
-| BM25 | 0,5333 | 0,6000 | 0,3605 |
+| TF-IDF + coseno | 0,5667 | 0,6667 | 0,3459 |
+| BM25 | 0,4667 | 0,6667 | 0,3608 |
 
-BM25 obtiene un mayor Recall@5 y MRR, mientras que TF-IDF recupera el documento relevante en una consulta más en el top 10 (19 frente a 18 de 30). Con 30 consultas, estas diferencias no bastan para afirmar que un método sea mejor en general.
+**Resultados y siguiente paso.** Ambos métodos recuperan el documento etiquetado en 20 de 30 consultas en el top 10, y fallan conjuntamente en nueve. La pregunta sobre una embajada, por ejemplo, coincide poco con un fragmento que habla de «misiones diplomáticas». En la pregunta sobre alérgenos, ambos primeros resultados hablan de anualidades por alimentos. El [notebook](hito_1.ipynb) muestra la ejecución y el detalle. En el Hito 2 contrastaremos si los embeddings mejoran los casos de paráfrasis con la misma colección, fragmentos y protocolo.
 
-Ambos métodos fallan en nueve consultas en el top 10. Un problema recurrente es la diferencia entre el vocabulario cotidiano y el jurídico. Por ejemplo, una consulta usa «embajada», mientras que el fragmento relevante dice «misiones diplomáticas». También se recuperan artículos cercanos o con contenido parecido que no cuentan como acierto porque la evaluación etiqueta como relevante únicamente el documento de origen. La ejecución y el análisis detallado están en [hito_1.ipynb](hito_1.ipynb).
-
-## Siguiente paso
-
-En el Hito 2 probaremos la recuperación densa con embeddings para comprobar si mejora en las consultas que usan sinónimos o paráfrasis. Mantendremos la misma colección, los mismos fragmentos, las mismas consultas y el mismo protocolo de evaluación para comparar los resultados con los baselines.
-
-## Uso de IA generativa
-
-Utilizamos ChatGPT para generar el borrador inicial de las consultas, como apoyo para revisar y mejorar el código del notebook y para redactar este resumen. Revisamos manualmente las 30 consultas finales y reformulamos 11. El notebook utiliza las consultas guardadas y no llama a un LLM para ejecutar los baselines ni calcular las métricas.
+**Uso de IA.** El equipo usó ChatGPT para los borradores de preguntas, el código y la redacción. El modelo exacto de generación y sus parámetros carecen de registro. Queda por validar con el profesor el alcance de la condición de pesos abiertos para esas preguntas. Codex ayudó a corregir la extracción, comprobar el respaldo, proponer dos ajustes y ejecutar y documentar la evaluación. Las métricas se obtienen con los baselines locales.
