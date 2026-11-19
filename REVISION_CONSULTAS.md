@@ -1,46 +1,33 @@
 # Revisión de las consultas del Hito 1
 
-## Muestreo y comprobación de los fragmentos
+## Procedencia
 
 Para preparar las preguntas partimos de 50 fragmentos elegidos al azar con
-semilla 42. Fijamos los 30 casos y sus documentos relevantes antes de evaluar
-los buscadores. Durante la preparación revisamos a mano si cada pregunta era
-concreta, evitaba expresiones distintivas del BOE y podía responderse con su
-fragmento de origen.
-
-La limpieza del XML cambió el texto de nueve de esos fragmentos. La tabla
-muestra los pasajes que vinculan las consultas afectadas con los fragmentos
-que indexamos e incluye el respaldo de las dos preguntas cuya redacción
-se precisó. Se puede localizar el texto completo por ID en `data/chunks.jsonl`.
-
-| Consulta | Fragmento actual | Pregunta evaluada | Pasaje de respaldo | Qué comprobamos |
-|---|---|---|---|---|
-| q005 | BOE-A-2006-20764_dtvigesimatercera_c0001 | Para comprobar la retención de una factura profesional que cobré en agosto de 2012, ¿qué versión de las reglas del IRPF tengo que mirar? | en su redacción vigente a 1 de enero de 2012 | Se mantiene el corte temporal en el texto de la disposición. |
-| q007 | BOE-A-2006-20764_a23_c0008 | Al hacer la renta por un piso que tengo alquilado, ¿en qué documento oficial puedo comprobar si el barrio está declarado zona tensionada? | apruebe el Ministerio de Vivienda y Agenda Urbana | Se conserva la remisión a la resolución. |
-| q009 | BOE-A-2006-20764_a3_c0001 | Vivo en una región que nunca ha aprobado normas propias sobre el impuesto de la renta. Para la parte regional de mi declaración, ¿se aplican entonces las rebajas y desgravaciones fijadas por el Estado? | las deducciones establecidos por el Estado | El apartado 3 sigue describiendo qué se aplica si la comunidad no ejerce sus competencias. |
-| q014 | BOE-A-2003-23514_a134_c0001 | ¿Hay algún documento oficial que fije cómo tienen que ser las señales de tráfico, su tamaño en cada carretera y qué indica cada una? | El Catálogo oficial de señales de la circulación y marcas viales | Se conserva el catálogo y la descripción de su contenido. |
-| q019 | BOE-A-2007-20555_a141_c0001 | Si un aparato defectuoso rompe otros objetos de mi casa, ¿qué cantidad se resta de lo que me tendría que pagar el fabricante por esos desperfectos? | se deducirá una franquicia de 500,00 euros | Se conserva el supuesto de daños materiales causados por un producto defectuoso. |
-| q022 | BOE-A-2008-821_a3_c0001 | Cuando acabe la carrera quiero hacer un máster oficial. ¿Se puede pedir beca del Ministerio para ese tipo de estudios? | Enseñanzas conducentes al título oficial de Máster Universitario | Precisar «máster oficial» porque «posgrado oficial» también puede referirse a un doctorado. |
-| q023 | BOE-A-2007-6820_a46bis_c0001 | Mi empresa me da una tarjeta para pagar el bus y el metro. ¿Hasta qué cantidad al mes y al año puede darme sin que Hacienda lo cuente como salario? | 136,36 euros mensuales por trabajador, con el límite de 1.500 euros anuales | Se conservan los dos límites y el contexto de la tarjeta. |
-| q025 | BOE-A-2007-20555_a19_c0004 | ¿Puede la Administración poner límites a las empresas que se presentan en tu casa a venderte algo sin que las hayas llamado? | visitas no solicitadas efectuadas por el empresario en el domicilio | Se reasigna al fragmento que identifica a la Administración y recoge su potestad de restringir las visitas. |
-| q027 | BOE-A-2008-821_a10_c0003 | Mi hijo necesita apoyo escolar por una discapacidad y somos familia numerosa. Para conseguir ayuda con el autobús y el comedor del colegio, ¿cuentan lo que ganamos o lo que tenemos? | no estará sujeta a límites de renta ni de patrimonio familiar | Se conserva el subsidio para familias numerosas y la ausencia de esos límites. |
-| q028 | BOE-A-2015-11430_a51_c0003 | Van a despedir a un grupo grande de compañeros y en la sede donde trabajo nadie representa legalmente a la plantilla. ¿Cuántos días tenemos para elegir a quienes negociarán en nuestro nombre? | quince días | Precisar que en el centro no hay representación legal de la plantilla. La ausencia de representación sindical es un supuesto distinto. |
-| q029 | BOE-A-2007-20555_a163_c0001 | Compré un paquete de vacaciones a través de una agencia. Si tengo un problema durante el viaje, ¿puedo presentar la queja en esa agencia o tengo que contactar yo con quien organizó el viaje? | directamente al minorista a través del cual fue adquirido | Se mantiene la posibilidad de reclamar en la agencia donde se contrató. |
-
-## Procedencia
+semilla 42 en la versión de la colección anterior a la limpieza del XML. La
+muestra está en `data/muestra_consultas.jsonl`. Fijamos los 30 casos y sus
+documentos relevantes antes de evaluar los buscadores.
 
 Pedimos a ChatGPT borradores de preguntas a partir de los fragmentos, con la
 instrucción de evitar las expresiones distintivas del texto. El notebook recoge
-la instrucción que usamos. Para repetir la evaluación basta con las preguntas
-guardadas en el repositorio.
+la instrucción que usamos. Los archivos de consultas son:
 
-Guardamos la muestra en `data/muestra_consultas.jsonl` y las preguntas de partida
-ya revisadas en `data/respuestas_llm.jsonl`. Las etiquetas que usamos para calcular
-las métricas están en `data/queries.jsonl`.
+- `data/respuestas_llm.jsonl`: las preguntas tal como las generó el LLM, en la
+  versión más antigua que conserva el repositorio (commit `eabd138`).
+- `data/queries.jsonl`: las preguntas revisadas, que son las que se evalúan.
 
-## Revisión humana histórica
+Las diferencias entre ambos archivos son las reformulaciones de la tabla 1.
 
-### Criterios de revisión
+## Comprobación tras la limpieza del corpus
+
+La limpieza del XML cambió el texto de nueve fragmentos de origen (q005, q007,
+q009, q014, q019, q023, q025, q027 y q029). Para cada uno guardamos en
+`data/respaldo_consultas.json` un pasaje que responde la pregunta y que aparece
+tanto en el fragmento de la muestra como en el fragmento indexado. El notebook
+comprueba esos pasajes. En q025 la limpieza acortó el artículo y el apartado 7,
+que responde la pregunta, pasó del fragmento `c0005` al `c0004`. Es el único
+caso en que cambia `source_chunk`. El documento relevante es el mismo.
+
+## Criterios de revisión
 
 Cada consulta se comparó con el texto completo de su fragmento de origen y con el resto de consultas:
 
@@ -50,8 +37,6 @@ Cada consulta se comparó con el texto completo de su fragmento de origen y con 
 4. **Diversidad.** Se evitó repetir planteamientos o expresiones llamativas entre consultas. Por ejemplo, se reformuló q004 para que no compartiera «despido colectivo» con q028.
 
 Como apoyo a la revisión manual, el notebook busca en cada consulta secuencias de tres palabras con al menos dos palabras de contenido que aparezcan literalmente en su fragmento. Tras la revisión, solo detectó una en q005, la fecha «agosto de 2012». Su uso se justifica en la tabla.
-
-Las consultas reformuladas sustituyen a la versión anterior en `data/respuestas_llm.jsonl` y en `data/queries.jsonl`. Los campos `qid`, `relevant_ids` y `source_chunk` no cambian.
 
 ## Resumen
 
@@ -86,13 +71,13 @@ Las consultas reformuladas sustituyen a la versión anterior en `data/respuestas
 | q019 | BOE-A-2007-20555_a141_c0001 | Si un aparato defectuoso rompe otros objetos de mi casa, ¿qué cantidad se resta de lo que me tendría que pagar el fabricante por esos desperfectos? | Aceptar | La pregunta usa «se resta», «fabricante» y «desperfectos» en lugar de «franquicia», «productor» y «daños materiales». El fragmento indica la cantidad de 500 euros. |
 | q020 | BOE-A-2003-23514_a115_c0001 | Llevo más de dos minutos parado dentro de un túnel. ¿Tengo que apagar el coche y qué luces debo dejar puestas? | Aceptar | «Túnel» y «dos minutos» son datos necesarios de la situación. El fragmento responde a las dos partes, parar el motor y mantener el alumbrado de posición. |
 | q021 | BOE-A-2015-11430_a11_c0009 | Firmé un contrato para aprender un oficio, pero la empresa no me está enseñando nada. ¿Puede convertirse mi contrato en uno fijo? | Reformular | Anterior: «Me contrataron para aprender un oficio, pero la empresa no me da la formación que debía. ¿Se puede considerar que tengo un contrato fijo ordinario?». «Ordinario» procedía de «contratos indefinidos de carácter ordinario». La nueva redacción lo expresa con palabras habituales. La respuesta sigue en la letra h). |
-| q022 | BOE-A-2008-821_a3_c0001 | Cuando acabe la carrera quiero hacer un posgrado oficial. ¿Se puede pedir beca del Ministerio para ese tipo de estudios? | Reformular | Anterior: «¿Los másteres universitarios oficiales están entre los estudios para los que se puede pedir una beca?». La versión anterior seguía de cerca la denominación «Máster Universitario» de la letra g). La nueva plantea la situación de un estudiante. El fragmento incluye expresamente los másteres universitarios oficiales entre los estudios para los que se pueden conceder becas. |
+| q022 | BOE-A-2008-821_a3_c0001 | Cuando acabe la carrera quiero hacer un máster oficial. ¿Se puede pedir beca del Ministerio para ese tipo de estudios? | Reformular | Anterior: «¿Los másteres universitarios oficiales están entre los estudios para los que se puede pedir una beca?». La versión del LLM seguía de cerca la denominación «Máster Universitario» de la letra g). Una primera reformulación usó «posgrado oficial», pero esa expresión también puede referirse a un doctorado, así que la versión final dice «máster oficial». El fragmento incluye expresamente los másteres universitarios oficiales entre los estudios para los que se pueden conceder becas. |
 | q023 | BOE-A-2007-6820_a46bis_c0001 | Mi empresa me da una tarjeta para pagar el bus y el metro. ¿Hasta qué cantidad al mes y al año puede darme sin que Hacienda lo cuente como salario? | Reformular | Anterior: «… ¿Cuál es el tope mensual y anual para que ese importe no cuente como parte de mi sueldo en especie?». «En especie» procedía de «retribución en especie». Los importes que recoge el fragmento son 136,36 euros al mes y 1.500 al año. |
 | q024 | BOE-A-2006-20764_a10_c0001 | Si soy española y me voy a vivir fuera para trabajar en una embajada de España, ¿sigo siendo contribuyente del IRPF español? | Aceptar | La pregunta usa «embajada» en lugar de «misiones diplomáticas». El fragmento recoge ese supuesto en el apartado 1.a y especifica las excepciones. |
-| q025 | BOE-A-2007-20555_a19_c0005 | ¿Puede la Administración poner límites a las empresas que se presentan en tu casa a venderte algo sin que las hayas llamado? | Aceptar | La pregunta usa «se presentan en tu casa sin que las hayas llamado» en lugar de «visitas no solicitadas… en el domicilio». La respuesta está en el apartado 7. |
+| q025 | BOE-A-2007-20555_a19_c0004 | ¿Puede la Administración poner límites a las empresas que se presentan en tu casa a venderte algo sin que las hayas llamado? | Aceptar | La pregunta usa «se presentan en tu casa sin que las hayas llamado» en lugar de «visitas no solicitadas… en el domicilio». La respuesta está en el apartado 7. En la muestra era el fragmento `c0005` (ver «Comprobación tras la limpieza del corpus»). |
 | q026 | BOE-A-2006-20764_a16_c0001 | Al calcular en el IRPF lo que gano por mi negocio, ¿cuáles son las dos variantes del método que se usa por defecto? | Aceptar | La pregunta usa «método que se usa por defecto» y «variantes» en lugar de «método general» y «modalidades». El fragmento identifica las modalidades normal y simplificada de la estimación directa. |
 | q027 | BOE-A-2008-821_a10_c0003 | Mi hijo necesita apoyo escolar por una discapacidad y somos familia numerosa. Para conseguir ayuda con el autobús y el comedor del colegio, ¿cuentan lo que ganamos o lo que tenemos? | Reformular | Anterior: «Mi hijo tiene necesidades educativas especiales y somos familia numerosa. ¿Hay un límite de ingresos o de patrimonio para optar a la ayuda del autobús y el comedor del colegio?». La versión anterior reproducía «necesidades educativas especiales» y «patrimonio». El fragmento indica que estos subsidios no están sujetos a límites de renta ni de patrimonio familiar. |
-| q028 | BOE-A-2015-11430_a51_c0003 | Van a despedir a un grupo grande de compañeros y en la sede donde trabajo nadie ejerce de representante sindical. ¿Cuántos días tenemos para elegir a quienes negociarán en nuestro nombre? | Reformular | Anterior: «La empresa ha avisado de que quiere hacer un despido colectivo. Si uno de los centros afectados no tiene delegados, ¿cuánto tiempo hay para formar el grupo que representará a la plantilla?». La versión anterior seguía de cerca la expresión «centros de trabajo afectados» y compartía «despido colectivo» con q004. El fragmento indica un plazo de quince días si alguno de los centros afectados carece de representantes legales de los trabajadores. |
+| q028 | BOE-A-2015-11430_a51_c0003 | Van a despedir a un grupo grande de compañeros y en la sede donde trabajo nadie representa legalmente a la plantilla. ¿Cuántos días tenemos para elegir a quienes negociarán en nuestro nombre? | Reformular | Anterior: «La empresa ha avisado de que quiere hacer un despido colectivo. Si uno de los centros afectados no tiene delegados, ¿cuánto tiempo hay para formar el grupo que representará a la plantilla?». La versión del LLM seguía de cerca la expresión «centros de trabajo afectados» y compartía «despido colectivo» con q004. Una primera reformulación decía «nadie ejerce de representante sindical», pero la falta de representación sindical es un supuesto distinto del que regula el fragmento, la falta de representantes legales. El fragmento indica un plazo de quince días si alguno de los centros afectados carece de representantes legales de los trabajadores. |
 | q029 | BOE-A-2007-20555_a163_c0001 | Compré un paquete de vacaciones a través de una agencia. Si tengo un problema durante el viaje, ¿puedo presentar la queja en esa agencia o tengo que contactar yo con quien organizó el viaje? | Aceptar | La pregunta usa «paquete de vacaciones» y «agencia» en lugar de «viaje combinado» y «minorista». El apartado 1 responde de forma directa. |
 | q030 | BOE-A-2007-20555_a18_c0001 | Tengo alergia a los frutos secos. ¿Puede la etiqueta de un alimento ser confusa sobre si los lleva o no? | Reformular | Anterior: «Tengo una alergia alimentaria. ¿Puede el envase dar una información ambigua sobre si el producto contiene el ingrediente que me causa alergia?». «Información ambigua» y «alergia alimentaria» seguían muy de cerca «ambigüedades… respecto a los alérgenos alimentarios». La letra b) sigue respaldando la respuesta. |
 
@@ -128,4 +113,4 @@ La posición corresponde al índice de cada fragmento en la muestra, empezando e
 | 47 | BOE-A-2015-11722_dasegunda-2_c0002 | Descartar | Es el final de una disposición y contiene principalmente notas de modificación. |
 | 48 | BOE-A-2006-20764_a51_c0004 | Reserva | La inembargabilidad de los planes de previsión asegurados permite una pregunta concreta, aunque el tema es cercano al de q004. |
 
-**Observación.** Entre los 20 candidatos que no se usaron, 9 contienen principalmente notas de modificación del BOE (posiciones 3, 28, 36, 43 y 47) o disposiciones transitorias sobre periodos pasados (15, 21, 25 y 35). Esto ilustra una limitación de la colección comentada en el apartado 4.7 del notebook: parte del texto indexado aporta fechas y referencias, pero no ayuda a responder las preguntas previstas para el chatbot.
+**Observación.** Esta clasificación se hizo con el texto de la muestra, anterior a la limpieza del XML. Cinco de los candidatos descartados (posiciones 3, 28, 36, 43 y 47) contenían sobre todo notas de modificación del BOE, que la limpieza ha eliminado de la colección actual. Otros cuatro (15, 21, 25 y 35) son disposiciones transitorias sobre periodos pasados.

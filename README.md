@@ -55,9 +55,12 @@ La reconstrucción y la evaluación usan los archivos locales.
 ## Consultas y evaluación
 
 - En `data/muestra_consultas.jsonl` guardamos los 50 fragmentos que salieron
-  al usar la semilla 42. `data/respuestas_llm.jsonl` recoge las preguntas
-  de partida ya revisadas. Para evaluar usamos `data/queries.jsonl`, que
-  asocia cada una de las 30 preguntas con su documento y fragmento de origen.
+  al usar la semilla 42 sobre la colección anterior a la limpieza del XML.
+  `data/respuestas_llm.jsonl` conserva las preguntas tal como las generó el
+  LLM. Para evaluar usamos `data/queries.jsonl`, con las 30 preguntas ya
+  revisadas, cada una asociada a su documento y fragmento de origen.
+  `data/respaldo_consultas.json` guarda los pasajes que comprueban las
+  consultas cuyo fragmento cambió con la limpieza.
   En [REVISION_CONSULTAS.md](REVISION_CONSULTAS.md) explicamos cómo hicimos la revisión.
 - [hito_1.ipynb](hito_1.ipynb) aplica el mismo preprocesado a consultas y
   fragmentos. Aprende el vocabulario únicamente de los fragmentos, con
