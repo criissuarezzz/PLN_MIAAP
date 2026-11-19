@@ -1,0 +1,57 @@
+[
+  {
+    "qid": "q005",
+    "fragmento_muestra": "BOE-A-2006-20764_dtvigesimatercera_c0001",
+    "fragmento_actual": "BOE-A-2006-20764_dtvigesimatercera_c0001",
+    "pasaje": "en su redacción vigente a 1 de enero de 2012"
+  },
+  {
+    "qid": "q007",
+    "fragmento_muestra": "BOE-A-2006-20764_a23_c0008",
+    "fragmento_actual": "BOE-A-2006-20764_a23_c0008",
+    "pasaje": "apruebe el Ministerio de Vivienda y Agenda Urbana"
+  },
+  {
+    "qid": "q009",
+    "fragmento_muestra": "BOE-A-2006-20764_a3_c0001",
+    "fragmento_actual": "BOE-A-2006-20764_a3_c0001",
+    "pasaje": "las deducciones establecidos por el Estado"
+  },
+  {
+    "qid": "q014",
+    "fragmento_muestra": "BOE-A-2003-23514_a134_c0001",
+    "fragmento_actual": "BOE-A-2003-23514_a134_c0001",
+    "pasaje": "El Catálogo oficial de señales de la circulación y marcas viales"
+  },
+  {
+    "qid": "q019",
+    "fragmento_muestra": "BOE-A-2007-20555_a141_c0001",
+    "fragmento_actual": "BOE-A-2007-20555_a141_c0001",
+    "pasaje": "se deducirá una franquicia de 500,00 euros"
+  },
+  {
+    "qid": "q023",
+    "fragmento_muestra": "BOE-A-2007-6820_a46bis_c0001",
+    "fragmento_actual": "BOE-A-2007-6820_a46bis_c0001",
+    "pasaje": "136,36 euros mensuales por trabajador, con el límite de 1.500 euros anuales"
+  },
+  {
+    "qid": "q025",
+    "fragmento_muestra": "BOE-A-2007-20555_a19_c0005",
+    "fragmento_actual": "BOE-A-2007-20555_a19_c0004",
+    "pasaje": "visitas no solicitadas efectuadas por el empresario en el domicilio",
+    "nota": "La limpieza del XML acortó el artículo y el apartado 7 pasó del fragmento c0005 al c0004."
+  },
+  {
+    "qid": "q027",
+    "fragmento_muestra": "BOE-A-2008-821_a10_c0003",
+    "fragmento_actual": "BOE-A-2008-821_a10_c0003",
+    "pasaje": "no estará sujeta a límites de renta ni de patrimonio familiar"
+  },
+  {
+    "qid": "q029",
+    "fragmento_muestra": "BOE-A-2007-20555_a163_c0001",
+    "fragmento_actual": "BOE-A-2007-20555_a163_c0001",
+    "pasaje": "directamente al minorista a través del cual fue adquirido"
+  }
+]
