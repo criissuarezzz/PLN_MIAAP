@@ -1,8 +1,8 @@
 # Guía de supervivencia del veinteañero
 
-Hito 1 de Procesamiento del Lenguaje Natural (UC3M). El proyecto compara dos
-buscadores léxicos sobre una colección normativa. Cada resultado de la evaluación
-corresponde a un documento del corpus.
+Hito 1 de Procesamiento del Lenguaje Natural (UC3M). Queremos que una pregunta cotidiana sirva para encontrar el artículo o la
+disposición del BOE que la responde. En este hito comparamos dos buscadores,
+TF-IDF y BM25, y medimos cuántas veces encuentran el documento esperado.
 
 ## Reproducir la ejecución
 
@@ -27,12 +27,11 @@ intérprete o `py -3.13` para crear el entorno. En macOS y Linux sustituye
 descarga el modelo español `es_core_news_sm 3.8.0` para spaCy 3.8.11.
 La reconstrucción y la evaluación usan los archivos locales.
 
-## Colección congelada
+## De dónde salen los documentos
 
 - `data/raw/boe/` contiene las 11 copias de legislación consolidada. La fecha
-  de descarga registrada por el proyecto original es el **13 de noviembre de 2026**.
-  La reconstrucción de este hito se realizó el **19 de noviembre de 2026** a partir
-  de esas copias.
+  de descarga que figura en el registro original es el **13 de noviembre de 2026**.
+  Reconstruimos el corpus el **19 de noviembre de 2026** con esas mismas copias.
 - `descargar_corpus.py` toma la última versión disponible de cada precepto en la
   copia local. Extrae párrafos, citas y celdas en orden, una sola vez. Excluye las
   clases editoriales `nota_pie` y `nota_pie_2`, las referencias `refPost` y los
@@ -42,7 +41,7 @@ La reconstrucción y la evaluación usan los archivos locales.
 - `data/corpus.jsonl` contiene **1.395 documentos**. Un documento es un
   precepto de al menos 15 palabras de texto extraído, como un artículo, una
   disposición o un anexo. Solo se incluyen las normas BOE de la lista del script.
-  Los tres archivos de EUR-Lex estaban vacíos y se retiraron.
+  Retiramos los tres archivos de EUR-Lex porque estaban vacíos.
 - `data/chunks.jsonl` contiene **2.315 fragmentos** y es el índice de referencia
   para el Hito 2. Los documentos de hasta 300 palabras quedan completos. Los
   largos se cortan en ventanas de 300, con 45 de solapamiento (15 %) y una última
@@ -55,11 +54,11 @@ La reconstrucción y la evaluación usan los archivos locales.
 
 ## Consultas y evaluación
 
-- `data/muestra_consultas.jsonl` conserva el muestreo histórico de 50 fragmentos
-  con semilla 42. `data/respuestas_llm.jsonl` conserva las preguntas revisadas
-  históricas. `data/queries.jsonl` contiene las 30 preguntas evaluadas y los
-  fragmentos de referencia actuales. La [revisión](REVISION_CONSULTAS.md) explica
-  los cambios, su respaldo y la procedencia declarada de ChatGPT.
+- En `data/muestra_consultas.jsonl` guardamos los 50 fragmentos que salieron
+  al usar la semilla 42. `data/respuestas_llm.jsonl` recoge las preguntas
+  de partida ya revisadas. Para evaluar usamos `data/queries.jsonl`, que
+  asocia cada una de las 30 preguntas con su documento y fragmento de origen.
+  En [REVISION_CONSULTAS.md](REVISION_CONSULTAS.md) explicamos cómo hicimos la revisión.
 - [hito_1.ipynb](hito_1.ipynb) aplica el mismo preprocesado a consultas y
   fragmentos. Aprende el vocabulario únicamente de los fragmentos, con
   `min_df=2` y `max_df=0.95`. Conserva negaciones, números y unidades de plazo
@@ -68,8 +67,9 @@ La reconstrucción y la evaluación usan los archivos locales.
   normalización Okapi, IDF positiva de tipo Lucene, `k1=1.5` y `b=0.75`.
   Ambos estiman IDF por fragmento. BM25 calcula su longitud media con los
   tokens que superan el filtrado.
-- El documento toma la puntuación de su mejor fragmento antes del corte K.
-  Se desempata por `chunk_id` y se recuperan resultados de puntuación positiva.
+- Para puntuar un documento usamos su mejor fragmento. Si hay un empate,
+  usamos el `chunk_id` para ordenar los resultados. Antes de quedarnos con los
+  K primeros, quitamos los duplicados y los resultados de puntuación cero.
   Recall@5, Recall@10 y MRR se calculan sobre documentos únicos. MRR usa el ranking
   positivo completo. La tasa de acierto del fragmento se muestra aparte.
 - [MILESTONE_1.md](MILESTONE_1.md) resume el trabajo y las métricas. El
