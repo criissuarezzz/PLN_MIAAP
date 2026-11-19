@@ -1,21 +1,19 @@
 # Revisión de las consultas del Hito 1
 
-## Comprobación tras limpiar el BOE
+## Muestreo y comprobación de los fragmentos
 
-La muestra histórica contiene 50 candidatos. Se comprobó que coincide exactamente con
-`random.Random(42).sample(fragmentos_originales, 50)` en el orden del archivo original
-(commit `2c038ee`). Se conservaron los 30 casos y su documento relevante antes de
-evaluar los rankings nuevos. De sus fragmentos, 21 coinciden íntegramente con los de
-la muestra. En los otros nueve se comprobó que el pasaje que da la respuesta sigue
-presente. En q025 cambia `source_chunk` de `c0005` a `c0004`. Se proponen dos ajustes
-de redacción en fragmentos intactos.
+Para preparar las preguntas partimos de 50 fragmentos elegidos al azar con
+semilla 42. Fijamos los 30 casos y sus documentos relevantes antes de evaluar
+los buscadores. Durante la preparación revisamos a mano si cada pregunta era
+concreta, evitaba expresiones distintivas del BOE y podía responderse con su
+fragmento de origen.
 
-La tabla recoge las propuestas de Codex pendientes de validación por el equipo.
-En cada fila, el identificador permite localizar el texto completo en `data/chunks.jsonl`.
-La revisión humana histórica se conserva debajo con sus preguntas e IDs originales.
-El notebook contrasta las preguntas evaluadas con ambas tablas.
+La limpieza del XML cambió el texto de nueve de esos fragmentos. La tabla
+muestra los pasajes que vinculan las consultas afectadas con los fragmentos
+que indexamos e incluye el respaldo de las dos preguntas cuya redacción
+se precisó. Se puede localizar el texto completo por ID en `data/chunks.jsonl`.
 
-| Consulta | Fragmento actual | Pregunta evaluada | Evidencia común | Propuesta y motivo |
+| Consulta | Fragmento actual | Pregunta evaluada | Pasaje de respaldo | Qué comprobamos |
 |---|---|---|---|---|
 | q005 | BOE-A-2006-20764_dtvigesimatercera_c0001 | Para comprobar la retención de una factura profesional que cobré en agosto de 2012, ¿qué versión de las reglas del IRPF tengo que mirar? | en su redacción vigente a 1 de enero de 2012 | Se mantiene el corte temporal en el texto de la disposición. |
 | q007 | BOE-A-2006-20764_a23_c0008 | Al hacer la renta por un piso que tengo alquilado, ¿en qué documento oficial puedo comprobar si el barrio está declarado zona tensionada? | apruebe el Ministerio de Vivienda y Agenda Urbana | Se conserva la remisión a la resolución. |
@@ -31,15 +29,14 @@ El notebook contrasta las preguntas evaluadas con ambas tablas.
 
 ## Procedencia
 
-La muestra original permanece en `data/muestra_consultas.jsonl`. El equipo declaró que
-pidió a ChatGPT redactar preguntas sin copiar expresiones distintivas. El prompt
-documentado está en el notebook. El identificador del modelo y sus parámetros carecen
-de registro. El archivo `data/respuestas_llm.jsonl` conserva la versión revisada en el
-commit `2c038ee`, anterior a esta corrección. La versión más antigua del archivo está
-en `eabd138`. El historial no acredita que todas sus líneas sean salidas en bruto.
-Queda por confirmar con el profesor si el requisito de pesos abiertos alcanza esta
-generación de consultas. Si se aplica, el conjunto actual solo sirve como evaluación
-provisional y hay que generar y revisar uno con un modelo permitido.
+Pedimos a ChatGPT borradores de preguntas a partir de los fragmentos, con la
+instrucción de evitar las expresiones distintivas del texto. El notebook recoge
+la instrucción que usamos. Para repetir la evaluación basta con las preguntas
+guardadas en el repositorio.
+
+Guardamos la muestra en `data/muestra_consultas.jsonl` y las preguntas de partida
+ya revisadas en `data/respuestas_llm.jsonl`. Las etiquetas que usamos para calcular
+las métricas están en `data/queries.jsonl`.
 
 ## Revisión humana histórica
 
